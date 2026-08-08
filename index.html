@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0f18">
+<link rel="manifest" href="manifest.webmanifest">
+<title>180 Day Discipline</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#080b12;color:#eef2ff;font-family:Arial,sans-serif}
+button,input,textarea{font:inherit}button{cursor:pointer}
+#splash{position:fixed;inset:0;background:#080b12;display:flex;align-items:center;justify-content:center;z-index:20;transition:.35s}
+#splash h1{font-size:28px;margin:0;letter-spacing:.5px}#app{min-height:100vh;padding-bottom:78px}
+header{padding:18px 16px 10px;position:sticky;top:0;background:#080b12ee;backdrop-filter:blur(12px);z-index:5}
+.brand{font-weight:800;font-size:18px}.date{font-size:12px;color:#8e99ad;margin-top:5px}
+main{padding:8px 16px}.page{display:none}.page.active{display:block}
+.card{background:#111725;border:1px solid #202a3d;border-radius:16px;padding:16px;margin:12px 0}
+.hero{padding:20px}.muted{color:#8e99ad}.progress{height:8px;background:#20283a;border-radius:99px;overflow:hidden;margin-top:10px}.bar{height:100%;width:0;background:#b7f300;border-radius:99px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat b{font-size:24px;display:block;margin-top:4px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.task{background:#0d1320;border:1px solid #202a3d;border-radius:12px;padding:13px}
+.task.done{border-color:#b7f300}.task input{accent-color:#b7f300;margin-right:8px}
+.note{width:100%;min-height:170px;background:#0d1320;color:#fff;border:1px solid #263149;border-radius:12px;padding:12px;resize:vertical}
+.save{margin-top:10px;width:100%;padding:12px;border:0;border-radius:11px;background:#b7f300;color:#091006;font-weight:800}
+.daynav{display:flex;gap:8px;align-items:center}.daynav button{background:#151d2d;color:#fff;border:1px solid #263149;border-radius:10px;padding:9px 12px}.daytitle{flex:1;text-align:center;font-weight:800}
+.bottom{position:fixed;bottom:0;left:0;right:0;height:70px;background:#0c111c;border-top:1px solid #202a3d;display:grid;grid-template-columns:repeat(3,1fr);z-index:10;padding-bottom:env(safe-area-inset-bottom)}
+.navbtn{border:0;background:none;color:#7f8ba1}.navbtn.active{color:#b7f300}.navbtn span{display:block;font-size:12px;margin-top:3px}
+.small{font-size:12px}.accent{color:#b7f300}
+</style>
+</head>
+<body>
+<div id="splash"><h1>WELCOME DEEPSU</h1></div>
+<div id="app">
+<header><div class="brand">180 DAY DISCIPLINE</div><div class="date" id="headerDate"></div></header>
+<main>
+<section id="home" class="page active">
+<div class="card hero">
+<div class="accent small">CORE DOCTRINE</div>
+<h2>NO EXCUSES. JUST EXECUTE.</h2>
+<div class="muted">Total Progress <span id="totalText">0 / 180 Days (0%)</span></div>
+<div class="progress"><div class="bar" id="totalBar"></div></div>
+</div>
+<div class="stats">
+<div class="card stat"><div class="muted">CURRENT STREAK</div><b id="streak">0</b><span class="muted small">days</span></div>
+<div class="card stat"><div class="muted">BEST STREAK</div><b id="best">0</b><span class="muted small">days</span></div>
+</div>
+<div class="card">
+<h3>Today's Checklist</h3>
+<div class="grid">
+<div class="task" id="homeBody">● BODY <b>-</b></div>
+<div class="task" id="homeMind">● MIND <b>-</b></div>
+<div class="task" id="homeSkill">● SKILL <b>-</b></div>
+<div class="task" id="homeYoutube">● YOUTUBE <b>-</b></div>
+</div>
+</div>
+<div class="card">
+<h3>Category Progress</h3>
+<div id="catProgress"></div>
+</div>
+</section>
+
+<section id="notes" class="page">
+<div class="card">
+<h2>Notes</h2><p class="muted">Jo bhi important ho yahan save kar.</p>
+<textarea id="noteBox" class="note" placeholder="Write your notes..."></textarea>
+<button class="save" onclick="saveNote()">SAVE NOTE</button>
+<p id="noteStatus" class="muted small"></p>
+</div>
+</section>
+
+<section id="tracker" class="page">
+<div class="card">
+<div class="daynav">
+<button onclick="changeDay(-1)">‹</button>
+<div class="daytitle" id="dayTitle">DAY 1</div>
+<button onclick="changeDay(1)">›</button>
+</div>
+<div class="muted small" style="text-align:center;margin-top:6px" id="dayDate"></div>
+</div>
+<div class="card">
+<h3>DAY-[√]</h3>
+<div class="task"><label><input type="checkbox" id="body"> WORKOUT / BODY</label></div>
+<div class="task"><label><input type="checkbox" id="mind"> STUDY / MIND</label></div>
+<div class="task"><label><input type="checkbox" id="skill"> SKILL</label></div>
+<div class="task"><label><input type="checkbox" id="youtube"> YOUTUBE</label></div>
+</div>
+<div class="card">
+<h3>Today's Win</h3>
+<textarea id="winBox" class="note" style="min-height:100px" placeholder="Aaj ka biggest win..."></textarea>
+<button class="save" onclick="saveDay()">SAVE DAY</button>
+</div>
+</section>
+</main>
+<nav class="bottom">
+<button class="navbtn active" onclick="showPage('home',this)">⌂<span>HOME</span></button>
+<button class="navbtn" onclick="showPage('notes',this)">✎<span>NOTES</span></button>
+<button class="navbtn" onclick="showPage('tracker',this)">✓<span>TRACKER</span></button>
+</nav>
+</div>
+<script>
+const KEY='deepsu180_v2';
+let data=JSON.parse(localStorage.getItem(KEY)||'{}'), day=Number(localStorage.getItem('currentDay')||1);
+const start=new Date('2026-08-10T00:00:00');
+const cats=['body','mind','skill','youtube'];
+function state(d){return data[d]||{body:false,mind:false,skill:false,youtube:false,win:''}}
+function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+function dateFor(d){let x=new Date(start);x.setDate(x.getDate()+d-1);return x.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'2-digit'})}
+function render(){
+ document.getElementById('headerDate').textContent='10/08/26 → 05/02/27';
+ let completed=0; for(let d=1;d<=180;d++) if(cats.every(c=>state(d)[c])) completed++;
+ document.getElementById('totalText').textContent=`${completed} / 180 Days (${Math.round(completed/1.8)}%)`;
+ document.getElementById('totalBar').style.width=(completed/180*100)+'%';
+ let streak=0;for(let d=180;d>=1;d--){if(cats.every(c=>state(d)[c])) streak++;else break}
+ let best=0,run=0;for(let d=1;d<=180;d++){if(cats.every(c=>state(d)[c])){run++;best=Math.max(best,run)}else run=0}
+ document.getElementById('streak').textContent=streak;document.getElementById('best').textContent=best;
+ document.getElementById('catProgress').innerHTML=cats.map(c=>{
+ let n=0;for(let d=1;d<=180;d++)if(state(d)[c])n++;
+ return `<div style="margin:12px 0"><div style="display:flex;justify-content:space-between"><span>${c.toUpperCase()}</span><span>${n}/180</span></div><div class="progress"><div class="bar" style="width:${n/180*100}%"></div></div></div>`
+ }).join('');
+ let s=state(day);cats.forEach(c=>document.getElementById(c).checked=!!s[c]);
+ document.getElementById('dayTitle').textContent='DAY '+day;
+ document.getElementById('dayDate').textContent=dateFor(day);
+ document.getElementById('winBox').value=s.win||'';
+ cats.forEach(c=>document.getElementById('home'+c[0].toUpperCase()+c.slice(1)).innerHTML=`● ${c.toUpperCase()} <b>${s[c]?'✓':'-'}</b>`);
+}
+function showPage(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');render()}
+function changeDay(n){day=Math.max(1,Math.min(180,day+n));localStorage.setItem('currentDay',day);render()}
+function saveDay(){let s=state(day);cats.forEach(c=>s[c]=document.getElementById(c).checked);s.win=document.getElementById('winBox').value;data[day]=s;save();render()}
+function saveNote(){localStorage.setItem('deepsu_note',document.getElementById('noteBox').value);document.getElementById('noteStatus').textContent='Saved on this device.'}
+document.getElementById('noteBox').value=localStorage.getItem('deepsu_note')||'';
+setTimeout(()=>{document.getElementById('splash').style.opacity='0';setTimeout(()=>document.getElementById('splash').remove(),400)},1000);
+render();
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
