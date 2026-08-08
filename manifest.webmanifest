@@ -1,0 +1,11 @@
+{
+  "name": "180 Day Discipline",
+  "short_name": "180 Discipline",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#080a0f",
+  "theme_color": "#080a0f",
+  "orientation": "portrait",
+  "icons": []
+}
